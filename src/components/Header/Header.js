@@ -39,7 +39,7 @@ export default function Header(props) {
                         <i className="fa fa-user-circle"></i>
                         {props.isLoggedIn}
                     </a>
-                    <a className="main-nav-item" onClick={handleLogout}>
+                    <a className="main-nav-item" onClick={handleLogout} href={"#logout"}>
                         <i className="fa fa-sign-out"></i>Sign Out
                     </a>
                 </div>

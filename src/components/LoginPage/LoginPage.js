@@ -19,7 +19,9 @@ export default function LoginPage() {
     }, [isLoggedIn, navigate]);
 
     const handleLogin = () => {
-        dispatch(loginUser({ email, password }));
+        if (email && password) {
+            dispatch(loginUser({ email, password }));
+        }
     };
 
     return (
@@ -32,7 +34,7 @@ export default function LoginPage() {
             <form>
                 <div className="input-wrapper">
                     <label htmlFor="email">Username</label
-                    ><input type="text"
+                    ><input type="email"
                             id="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}

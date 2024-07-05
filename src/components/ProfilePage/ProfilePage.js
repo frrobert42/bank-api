@@ -1,23 +1,28 @@
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
-import { useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {getUserInfo} from "../../store/userReducer";
+import {useEffect} from "react";
 
 export default function ProfilePage() {
 
-    const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
-    console.log("isLoggedIn ", isLoggedIn);
+    const {userInfo} = useSelector((state) => state?.user);
+    const dispatch = useDispatch();
 
-    if (!isLoggedIn) {
-        // window.location.href = '/login';
-        console.log("redirect");
-    }
+    useEffect(() => {
+        dispatch(getUserInfo());
+    }, [dispatch]);
 
+    console.log(userInfo);
     return (
         <>
             <Header isLoggedIn={"true"}/>
             <main className="main bg-dark">
                 <div className="header">
-                    <h1>Welcome back<br />Tony Jarvis!</h1>
+                    <h1>
+                        Welcome back<br />
+                        {userInfo && <>{userInfo?.firstName} {userInfo?.lastName}</>}!
+                    </h1>
                     <button className="edit-button">Edit Name</button>
                 </div>
                 <h2 className="sr-only">Accounts</h2>

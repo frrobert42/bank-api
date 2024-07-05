@@ -12,7 +12,6 @@ export const loginUser = createAsyncThunk('user/login', async (userData, { rejec
                     'Content-Type': 'application/json'
                 }
             });
-        // console.log("response ", response);
         return response.data;
     } catch (error) {
         console.error('Error logging in user:', error);
@@ -20,10 +19,30 @@ export const loginUser = createAsyncThunk('user/login', async (userData, { rejec
     }
 });
 
+// Async thunk for getting user info
+export const getUserInfo = createAsyncThunk('user/getUserInfo', async (_, { getState, rejectWithValue }) => {
+    try {
+        const token = localStorage.getItem('token');
+
+        const response = await axios.post('http://localhost:3001/api/v1/user/profile', _, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error getting user info:', error);
+        return rejectWithValue('Failed to fetch user info');
+    }
+});
+
 const userSlice = createSlice({
     name: 'user',
     initialState: {
         userInfo: null,
+        token: null,
         isLoggedIn: false,
         isLoading: false,
         error: null
@@ -42,14 +61,24 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(loginUser.fulfilled, (state, action) => {
-                state.userInfo = action.payload;
+                state.token = action.payload.body.token;
+                localStorage.setItem('token', action.payload.body.token);
+                getUserInfo();
                 state.isLoggedIn = true;
                 state.isLoading = false;
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.error = action.payload;
                 state.isLoading = false;
-            });
+            })
+            .addCase(getUserInfo.pending, (state, action) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(getUserInfo.fulfilled, (state, action) => {
+                state.userInfo = action.payload.body;
+                state.isLoading = false;
+            })
     }
 });
 
