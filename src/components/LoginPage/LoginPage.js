@@ -1,14 +1,22 @@
 import Footer from "../Footer/Footer";
 import Header from "../Header/Header";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {loginUser} from "../../store/userReducer";
+import {useNavigate} from "react-router-dom";
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
-    const { isLoading, error } = useSelector((state) => state.user);
+    const { isLoading, error, isLoggedIn } = useSelector((state) => state.user);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            navigate('/profile');
+        }
+    }, [isLoggedIn, navigate]);
 
     const handleLogin = () => {
         dispatch(loginUser({ email, password }));

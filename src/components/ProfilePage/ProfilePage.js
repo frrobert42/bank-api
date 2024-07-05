@@ -1,7 +1,17 @@
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
+import { useSelector } from 'react-redux';
 
 export default function ProfilePage() {
+
+    const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+    console.log("isLoggedIn ", isLoggedIn);
+
+    if (!isLoggedIn) {
+        // window.location.href = '/login';
+        console.log("redirect");
+    }
+
     return (
         <>
             <Header isLoggedIn={"true"}/>

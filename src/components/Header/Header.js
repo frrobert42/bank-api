@@ -7,7 +7,6 @@ export default function Header(props) {
     const dispatch = useDispatch();
     let isLoggedIn = false;
     if (props) {
-        console.log("props ", props);
         isLoggedIn = !!props.isLoggedIn;
     }
 
@@ -29,8 +28,7 @@ export default function Header(props) {
                 !isLoggedIn &&
                 <div>
                     <a className="main-nav-item" href="/profile">
-                        <i className="fa fa-user-circle"></i>
-                        Sign In
+                        <i className="fa fa-user-circle"></i>Sign In
                     </a>
                 </div>
             }
@@ -42,8 +40,7 @@ export default function Header(props) {
                         {props.isLoggedIn}
                     </a>
                     <a className="main-nav-item" onClick={handleLogout}>
-                        <i className="fa fa-sign-out"></i>
-                        Sign Out
+                        <i className="fa fa-sign-out"></i>Sign Out
                     </a>
                 </div>
             }

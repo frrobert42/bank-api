@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+
 // Async thunk for user login
 export const loginUser = createAsyncThunk('user/login', async (userData, { rejectWithValue }) => {
     try {
@@ -11,10 +12,10 @@ export const loginUser = createAsyncThunk('user/login', async (userData, { rejec
                     'Content-Type': 'application/json'
                 }
             });
-        console.log("response ", response);
+        // console.log("response ", response);
         return response.data;
     } catch (error) {
-        // console.error('Error logging in user:', error);
+        console.error('Error logging in user:', error);
         return rejectWithValue("Wrong email or password");
     }
 });
@@ -41,12 +42,9 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(loginUser.fulfilled, (state, action) => {
-                console.log("action ", action);
                 state.userInfo = action.payload;
                 state.isLoggedIn = true;
                 state.isLoading = false;
-                // redirect to /profile
-                window.location.href = '/profile';
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.error = action.payload;
