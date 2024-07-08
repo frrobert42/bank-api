@@ -9,7 +9,7 @@ export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
-    const { isLoading, error, isLoggedIn } = useSelector((state) => state.user);
+    const {error, isLoggedIn } = useSelector((state) => state.user);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -53,7 +53,6 @@ export default function LoginPage() {
                     <label htmlFor="remember-me">Remember me</label>
                 </div>
                 <button onClick={handleLogin} className="sign-in-button" type={"button"}>Sign In</button>
-                {isLoading && <p>Loading...</p>}
                 {error && <p>Error: {error}</p>}
             </form>
         </section>

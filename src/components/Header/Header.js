@@ -1,14 +1,11 @@
 import "./header.css";
 import PropTypes from "prop-types";
 import {logoutUser} from "../../store/userReducer";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
 export default function Header(props) {
+    const {userInfo, isLoggedIn} = useSelector((state) => state?.user);
     const dispatch = useDispatch();
-    let isLoggedIn = false;
-    if (props) {
-        isLoggedIn = !!props.isLoggedIn;
-    }
 
     const handleLogout = () => {
         dispatch(logoutUser());
@@ -27,7 +24,7 @@ export default function Header(props) {
             {
                 !isLoggedIn &&
                 <div>
-                    <a className="main-nav-item" href="/profile">
+                    <a className="main-nav-item" href="/login">
                         <i className="fa fa-user-circle"></i>Sign In
                     </a>
                 </div>
@@ -37,7 +34,7 @@ export default function Header(props) {
                 <div>
                     <a className="main-nav-item" href="/profile">
                         <i className="fa fa-user-circle"></i>
-                        {props.isLoggedIn}
+                        {userInfo?.firstName}
                     </a>
                     <a className="main-nav-item" onClick={handleLogout} href={"#logout"}>
                         <i className="fa fa-sign-out"></i>Sign Out

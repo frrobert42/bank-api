@@ -33,7 +33,7 @@ export const getUserInfo = createAsyncThunk('user/getUserInfo', async (_, { getS
         });
         return response.data;
     } catch (error) {
-        console.error('Error getting user info:', error);
+        // console.error('Error getting user info:', error);
         return rejectWithValue('Failed to fetch user info');
     }
 });
@@ -51,7 +51,10 @@ const userSlice = createSlice({
         logoutUser(state) {
             state.userInfo = null;
             state.isLoggedIn = false;
-            window.location.href = '/login';
+            state.isLoading = false;
+            state.token = null;
+            localStorage.removeItem('token');
+            window.location.href = '/login'; // TODO Redirect to login page from component
         }
     },
     extraReducers: (builder) => {
@@ -72,12 +75,12 @@ const userSlice = createSlice({
                 state.isLoading = false;
             })
             .addCase(getUserInfo.pending, (state, action) => {
-                state.isLoading = true;
                 state.error = null;
             })
             .addCase(getUserInfo.fulfilled, (state, action) => {
                 state.userInfo = action.payload.body;
                 state.isLoading = false;
+                state.isLoggedIn = true;
             })
     }
 });

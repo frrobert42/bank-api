@@ -3,17 +3,28 @@ import Footer from "../Footer/Footer";
 import {useDispatch, useSelector} from 'react-redux';
 import {getUserInfo} from "../../store/userReducer";
 import {useEffect} from "react";
+import "./ProfilePage.css";
+import {useNavigate} from "react-router-dom";
 
 export default function ProfilePage() {
 
-    const {userInfo} = useSelector((state) => state?.user);
+    const {userInfo, isLoggedIn} = useSelector((state) => state?.user);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    console.log(localStorage.getItem('token'));
+
+    if (localStorage.getItem('token') && !isLoggedIn) {
+        dispatch(getUserInfo());
+    }
 
     useEffect(() => {
         dispatch(getUserInfo());
-    }, [dispatch]);
+        if (!localStorage.getItem('token')) {
+            navigate('/login');
+        }
+    }, [dispatch, isLoggedIn, navigate]);
 
-    console.log(userInfo);
     return (
         <>
             <Header isLoggedIn={"true"}/>
