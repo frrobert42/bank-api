@@ -38,6 +38,26 @@ export const getUserInfo = createAsyncThunk('user/getUserInfo', async (_, { getS
     }
 });
 
+
+// Async thunk for updating user info
+export const updateUserInfo = createAsyncThunk('user/profile', async (userData, {rejectWithValue }) => {
+    try {
+        const token = localStorage.getItem('token');
+
+        const response = await axios.put('http://localhost:3001/api/v1/user/profile', userData, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+            }
+        });
+        return response.data;
+    } catch (error) {
+        // console.error('Error getting user info:', error);
+        return rejectWithValue('Failed to fetch user info');
+    }
+});
+
 const userSlice = createSlice({
     name: 'user',
     initialState: {
@@ -78,6 +98,11 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(getUserInfo.fulfilled, (state, action) => {
+                state.userInfo = action.payload.body;
+                state.isLoading = false;
+                state.isLoggedIn = true;
+            })
+            .addCase(updateUserInfo.fulfilled, (state, action) => {
                 state.userInfo = action.payload.body;
                 state.isLoading = false;
                 state.isLoggedIn = true;

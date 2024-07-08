@@ -1,21 +1,36 @@
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import {useDispatch, useSelector} from 'react-redux';
-import {getUserInfo} from "../../store/userReducer";
-import {useEffect} from "react";
+import {getUserInfo, updateUserInfo} from "../../store/userReducer";
+import {useEffect, useState} from "react";
 import "./ProfilePage.css";
 import {useNavigate} from "react-router-dom";
 
 export default function ProfilePage() {
 
+    const [editName, setEditName] = useState(false);
     const {userInfo, isLoggedIn} = useSelector((state) => state?.user);
+    const [firstName, setFirstName] = useState(userInfo?.firstName);
+    const [lastName, setLastName] = useState(userInfo?.lastName);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    console.log(localStorage.getItem('token'));
-
     if (localStorage.getItem('token') && !isLoggedIn) {
         dispatch(getUserInfo());
+    }
+
+    // show edit form
+    const setEditMode = () => {
+        setEditName(true);
+        setFirstName(userInfo?.firstName);
+        setLastName(userInfo?.lastName);
+    }
+
+    // update user name
+    const updateName = (e) => {
+        e.preventDefault();
+        dispatch(updateUserInfo({firstName, lastName}));
+        setEditName(!editName);
     }
 
     useEffect(() => {
@@ -34,7 +49,21 @@ export default function ProfilePage() {
                         Welcome back<br />
                         {userInfo && <>{userInfo?.firstName} {userInfo?.lastName}</>}!
                     </h1>
-                    <button className="edit-button">Edit Name</button>
+                    {editName === true &&
+                        <form onSubmit={updateName}>
+                            <input type="text" id="firstName" name="firstName" value={firstName}
+                                   onChange={(e) => setFirstName(e.target.value)}/>
+                            <input type="text" id="lastName" name="lastName" value={lastName}
+                                   onChange={(e) => setLastName(e.target.value)}/>
+                            <div className="edit-name-buttons">
+                                <button className="submit-button" type="submit">Submit</button>
+                                <button className="submit-button" type="button" onClick={updateName}>Cancel</button>
+                            </div>
+                        </form>
+                    }
+                    {!editName &&
+                        <button className="edit-button" onClick={setEditMode}>Edit Name</button>
+                    }
                 </div>
                 <h2 className="sr-only">Accounts</h2>
                 <section className="account">

@@ -1,0 +1,21 @@
+input {
+    padding: 5px;
+    margin: 5px;
+    font-size: 1.2rem;
+}
+
+.submit-button {
+    display: block;
+    margin: 5px;
+    padding: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-color: #00bc77;
+    background-color: #00bc77;
+    color: #fff;
+}
+
+.edit-name-buttons {
+    display: flex;
+    justify-content: center;
+}
