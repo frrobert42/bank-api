@@ -16,8 +16,6 @@ export default function ProfilePage() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    if (localStorage.getItem('token') && !isLoggedIn) dispatch(getUserInfo());
-
     // show edit form
     const setEditMode = () => {
         setEditName(true);

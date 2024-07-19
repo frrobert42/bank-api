@@ -2,7 +2,7 @@ import "./header.css";
 import PropTypes from "prop-types";
 import {logoutUser} from "../../store/userReducer";
 import {useDispatch, useSelector} from "react-redux";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 export default function Header(props) {
     const {userInfo, isLoggedIn} = useSelector((state) => state?.user);
@@ -11,39 +11,37 @@ export default function Header(props) {
 
     const handleLogout = () => {
         dispatch(logoutUser());
-        if (!isLoggedIn) {
-            navigate('/login');
-        }
+        navigate('/login');
     };
 
     return (
         <nav className="main-nav">
-            <a className="main-nav-logo" href="/">
+            <Link className="main-nav-logo" to="/">
                 <img
                     className="main-nav-logo-image"
                     src="/img/argentBankLogo.png"
                     alt="Argent Bank Logo"
                 />
                 <h1 className="sr-only">Argent Bank</h1>
-            </a>
+            </Link>
             {
                 !isLoggedIn &&
                 <div>
-                    <a className="main-nav-item" href="/login">
+                    <Link className="main-nav-item" to="/login">
                         <i className="fa fa-user-circle"></i>Sign In
-                    </a>
+                    </Link>
                 </div>
             }
             {
                 isLoggedIn &&
                 <div>
-                    <a className="main-nav-item" href="/profile">
+                    <Link to="/profile" className="main-nav-item">
                         <i className="fa fa-user-circle"></i>
                         {userInfo?.firstName}
-                    </a>
-                    <a className="main-nav-item" onClick={handleLogout} href={"#logout"}>
+                    </Link>
+                    <button className="main-nav-item" onClick={handleLogout}>
                         <i className="fa fa-sign-out"></i>Sign Out
-                    </a>
+                    </button>
                 </div>
             }
 
