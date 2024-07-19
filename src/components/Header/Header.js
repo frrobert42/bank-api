@@ -2,13 +2,18 @@ import "./header.css";
 import PropTypes from "prop-types";
 import {logoutUser} from "../../store/userReducer";
 import {useDispatch, useSelector} from "react-redux";
+import {useNavigate} from "react-router-dom";
 
 export default function Header(props) {
     const {userInfo, isLoggedIn} = useSelector((state) => state?.user);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const handleLogout = () => {
         dispatch(logoutUser());
+        if (!isLoggedIn) {
+            navigate('/login');
+        }
     };
 
     return (

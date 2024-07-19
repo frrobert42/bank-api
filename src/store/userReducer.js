@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 
-// Async thunk for user login
 export const loginUser = createAsyncThunk('user/login', async (userData, { rejectWithValue }) => {
     try {
         const response = await axios.post('http://localhost:3001/api/v1/user/login', userData,
@@ -14,12 +13,10 @@ export const loginUser = createAsyncThunk('user/login', async (userData, { rejec
             });
         return response.data;
     } catch (error) {
-        console.error('Error logging in user:', error);
         return rejectWithValue("Wrong email or password");
     }
 });
 
-// Async thunk for getting user info
 export const getUserInfo = createAsyncThunk('user/getUserInfo', async (_, { getState, rejectWithValue }) => {
     try {
         const token = localStorage.getItem('token');
@@ -33,13 +30,11 @@ export const getUserInfo = createAsyncThunk('user/getUserInfo', async (_, { getS
         });
         return response.data;
     } catch (error) {
-        // console.error('Error getting user info:', error);
         return rejectWithValue('Failed to fetch user info');
     }
 });
 
 
-// Async thunk for updating user info
 export const updateUserInfo = createAsyncThunk('user/profile', async (userData, {rejectWithValue }) => {
     try {
         const token = localStorage.getItem('token');
@@ -53,7 +48,6 @@ export const updateUserInfo = createAsyncThunk('user/profile', async (userData, 
         });
         return response.data;
     } catch (error) {
-        // console.error('Error getting user info:', error);
         return rejectWithValue('Failed to fetch user info');
     }
 });
@@ -74,7 +68,6 @@ const userSlice = createSlice({
             state.isLoading = false;
             state.token = null;
             localStorage.removeItem('token');
-            window.location.href = '/login'; // TODO Redirect to login page from component
         }
     },
     extraReducers: (builder) => {
@@ -96,17 +89,26 @@ const userSlice = createSlice({
             })
             .addCase(getUserInfo.pending, (state, action) => {
                 state.error = null;
+                state.isLoading = true;
             })
             .addCase(getUserInfo.fulfilled, (state, action) => {
                 state.userInfo = action.payload.body;
                 state.isLoading = false;
                 state.isLoggedIn = true;
             })
+            .addCase(updateUserInfo.pending, (state, action) => {
+                state.isLoading = true;
+                state.error = null;
+            })
             .addCase(updateUserInfo.fulfilled, (state, action) => {
                 state.userInfo = action.payload.body;
                 state.isLoading = false;
                 state.isLoggedIn = true;
             })
+            .addCase(updateUserInfo.rejected, (state, action) => {
+                state.error = action.payload;
+                state.isLoading = false;
+            });
     }
 });
 

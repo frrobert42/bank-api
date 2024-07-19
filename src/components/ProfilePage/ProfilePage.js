@@ -5,19 +5,18 @@ import {getUserInfo, updateUserInfo} from "../../store/userReducer";
 import {useEffect, useState} from "react";
 import "./ProfilePage.css";
 import {useNavigate} from "react-router-dom";
+import Loading from "../Loading/loading";
 
 export default function ProfilePage() {
 
     const [editName, setEditName] = useState(false);
-    const {userInfo, isLoggedIn} = useSelector((state) => state?.user);
+    const {userInfo, isLoggedIn, isLoading} = useSelector((state) => state?.user);
     const [firstName, setFirstName] = useState(userInfo?.firstName);
     const [lastName, setLastName] = useState(userInfo?.lastName);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    if (localStorage.getItem('token') && !isLoggedIn) {
-        dispatch(getUserInfo());
-    }
+    if (localStorage.getItem('token') && !isLoggedIn) dispatch(getUserInfo());
 
     // show edit form
     const setEditMode = () => {
@@ -35,9 +34,7 @@ export default function ProfilePage() {
 
     useEffect(() => {
         dispatch(getUserInfo());
-        if (!localStorage.getItem('token')) {
-            navigate('/login');
-        }
+        if (!localStorage.getItem('token')) navigate('/login');
     }, [dispatch, isLoggedIn, navigate]);
 
     return (
@@ -47,7 +44,8 @@ export default function ProfilePage() {
                 <div className="header">
                     <h1>
                         Welcome back<br />
-                        {userInfo && <>{userInfo?.firstName} {userInfo?.lastName}</>}!
+                        {userInfo && !isLoading && <>{userInfo?.firstName} {userInfo?.lastName}!</>}
+                        {isLoading && <Loading />}
                     </h1>
                     {editName === true &&
                         <form onSubmit={updateName}>
