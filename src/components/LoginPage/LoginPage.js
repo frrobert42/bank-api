@@ -18,10 +18,8 @@ export default function LoginPage() {
     }, [isLoggedIn, navigate]);
 
     const handleLogin = () => {
-        if (email && password) {
-            dispatch(loginUser({ email, password }));
-            if (isLoggedIn) navigate('/profile');
-        }
+        dispatch(loginUser({ email, password }));
+        if (isLoggedIn) navigate('/profile');
     };
 
     return (

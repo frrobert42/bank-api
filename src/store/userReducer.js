@@ -2,8 +2,15 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 
-export const loginUser = createAsyncThunk('user/login', async (userData, { rejectWithValue }) => {
+// Create an async thunk for loginUser
+export const loginUser = createAsyncThunk('user/login',
+    async (userData, { rejectWithValue }) => {
     try {
+        localStorage.removeItem('token');
+        // Check if the email and password are empty
+        if (userData.email === '') return rejectWithValue("Email is required");
+        if (userData.password === '') return rejectWithValue("Password is required");
+        // Make a POST request to the server
         const response = await axios.post('http://localhost:3001/api/v1/user/login', userData,
             {
                 headers: {
@@ -11,16 +18,20 @@ export const loginUser = createAsyncThunk('user/login', async (userData, { rejec
                     'Content-Type': 'application/json'
                 }
             });
+        // Return the response data
         return response.data;
     } catch (error) {
         return rejectWithValue("Wrong email or password");
     }
 });
 
-export const getUserInfo = createAsyncThunk('user/getUserInfo', async (_, { getState, rejectWithValue }) => {
+// Create an async thunk for getUserInfo
+export const getUserInfo = createAsyncThunk('user/getUserInfo',
+    async (_, { _getState, rejectWithValue }) => {
     try {
+        // Get the token from the local storage
         const token = localStorage.getItem('token');
-
+        // Make a POST request to the server
         const response = await axios.post('http://localhost:3001/api/v1/user/profile', _, {
             headers: {
                 'Accept': 'application/json',
@@ -34,11 +45,13 @@ export const getUserInfo = createAsyncThunk('user/getUserInfo', async (_, { getS
     }
 });
 
-
-export const updateUserInfo = createAsyncThunk('user/profile', async (userData, {rejectWithValue }) => {
+// Create an async thunk for updateUserInfo
+export const updateUserInfo = createAsyncThunk('user/profile',
+    async (userData, {rejectWithValue }) => {
     try {
+        // Get the token from the local storage
         const token = localStorage.getItem('token');
-
+        // Make a PUT request to the server
         const response = await axios.put('http://localhost:3001/api/v1/user/profile', userData, {
             headers: {
                 'Accept': 'application/json',
@@ -52,14 +65,15 @@ export const updateUserInfo = createAsyncThunk('user/profile', async (userData, 
     }
 });
 
+// Create userSlice
 const userSlice = createSlice({
     name: 'user',
     initialState: {
-        userInfo: null,
-        token: null,
-        isLoggedIn: false,
-        isLoading: false,
-        error: null
+        userInfo: null, // the user info
+        token: null, // the token for the user
+        isLoggedIn: false, // if the user is logged in
+        isLoading: false, // if the data is loading
+        error: null // if there is an error
     },
     reducers: {
         logoutUser(state) {
@@ -70,8 +84,12 @@ const userSlice = createSlice({
             localStorage.removeItem('token');
         }
     },
+
+    // Add extra reducers
     extraReducers: (builder) => {
         builder
+
+            // Add reducers for loginUser
             .addCase(loginUser.pending, (state) => {
                 state.isLoading = true;
                 state.error = null;
@@ -87,7 +105,9 @@ const userSlice = createSlice({
                 state.error = action.payload;
                 state.isLoading = false;
             })
-            .addCase(getUserInfo.pending, (state, action) => {
+
+            // Add reducers for getUserInfo
+            .addCase(getUserInfo.pending, (state) => {
                 state.error = null;
                 state.isLoading = true;
             })
@@ -96,7 +116,9 @@ const userSlice = createSlice({
                 state.isLoading = false;
                 state.isLoggedIn = true;
             })
-            .addCase(updateUserInfo.pending, (state, action) => {
+
+            // Add reducers for updateUserInfo
+            .addCase(updateUserInfo.pending, (state) => {
                 state.isLoading = true;
                 state.error = null;
             })
