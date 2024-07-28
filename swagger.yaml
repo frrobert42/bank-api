@@ -108,6 +108,30 @@ paths:
         404:
           description: Transaction not found
 
+    delete:
+      tags:
+        - Transactions Module
+      summary: Delete transaction details
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          description: JWT token for authentication
+          required: true
+        - in: path
+          name: transactionId
+          type: string
+          required: true
+          description: Transaction identifier
+      responses:
+        200:
+          description: Transaction details successfully deleted
+        400:
+          description: Invalid request
+        404:
+          description: Transaction not found
+
+
 definitions:
   Transaction:
     type: object
