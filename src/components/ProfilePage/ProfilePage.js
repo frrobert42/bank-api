@@ -32,7 +32,7 @@ export default function ProfilePage() {
 
     useEffect(() => {
         dispatch(getUserInfo());
-        if (!localStorage.getItem('token')) navigate('/login');
+        if (!localStorage.getItem('token')) navigate('/');
     }, [dispatch, isLoggedIn, navigate]);
 
     return (
